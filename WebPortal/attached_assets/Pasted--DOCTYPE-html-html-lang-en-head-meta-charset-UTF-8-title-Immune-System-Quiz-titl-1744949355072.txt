@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Immune System Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    .question { font-size: 1.5em; margin: 20px; }
+    .answers button { margin: 5px; padding: 10px 20px; font-size: 1em; }
+    #scoreDisplay { font-size: 2em; margin-top: 30px; }
+  </style>
+</head>
+<body>
+
+  <h1>🦠 Immune System Quiz</h1>
+  <div class="question" id="question">Loading question...</div>
+  <div class="answers" id="answers"></div>
+
+  <div id="scoreDisplay"></div>
+
+  <script>
+    const quizData = [
+      { question: "What does the immune system do?", correct: "Protects the body" },
+      { question: "What are white blood cells?", correct: "Defenders" },
+      { question: "What organ produces white blood cells?", correct: "Bone marrow" },
+      { question: "What is a vaccine?", correct: "Training for the immune system" }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function startQuiz() {
+      score = 0;
+      currentQuestion = 0;
+      console.log("🎮 Game started! Score reset to: " + score);
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      document.getElementById("question").textContent = q.question;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = '';
+
+      const options = [q.correct, "Wrong 1", "Wrong 2", "Wrong 3"].sort(() => Math.random() - 0.5);
+
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option, q.correct);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(userAnswer, correctAnswer) {
+      if (userAnswer === correctAnswer) {
+        score += 10;
+        console.log("✅ Correct! Score is now: " + score);
+      } else {
+        console.log("❌ Incorrect. Score is still: " + score);
+      }
+
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        showQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      console.log("🎉 Final score: " + score);
+      document.getElementById("question").textContent = "Quiz Completed!";
+      document.getElementById("answers").innerHTML = '';
+      document.getElementById("scoreDisplay").textContent = "Your final score is: " + score + " points!";
+    }
+
+    // Start the quiz
+    startQuiz();
+  </script>
+
+</body>
+</html>

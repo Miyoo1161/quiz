@@ -1,0 +1,96 @@
+// クイズの質問データ
+const questions = [
+  {
+    question: "What is the main job of the immune system?",
+    options: ["To help us sleep", "To protect the body from germs", "To give us energy", "To build muscles"],
+    answer: 1 // 正解は2番目
+  },
+  {
+    question: "What are germs?",
+    options: ["Helpful vitamins", "Tiny things that can make us sick", "Muscles in our body", "A type of white blood cell"],
+    answer: 1
+  },
+  {
+    question: "Which type of cell fights disease?",
+    options: ["Red blood cells", "Skin cells", "White blood cells", "Brain cells"],
+    answer: 2
+  },
+  // 以下、他の質問も同様に20問分続ける
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let username = "";
+
+function startQuiz() {
+  username = document.getElementById("username").value;
+  if (username === "") {
+    alert("Please enter your name!");
+    return;
+  }
+  
+  document.getElementById("start-screen").style.display = "none";
+  document.getElementById("quiz-container").style.display = "block";
+  
+  showQuestion();
+}
+
+function showQuestion() {
+  const currentQuestion = questions[currentQuestionIndex];
+  const questionTitle = document.getElementById("question-title");
+  const questionContainer = document.getElementById("question-container");
+  
+  questionTitle.innerText = `Question ${currentQuestionIndex + 1}`;
+  
+  let optionsHTML = "";
+  currentQuestion.options.forEach((option, index) => {
+    optionsHTML += `<div>
+                      <input type="radio" name="answer" value="${index}" id="option${index}" />
+                      <label for="option${index}">${option}</label>
+                    </div>`;
+  });
+  
+  questionContainer.innerHTML = `<p class="question">${currentQuestion.question}</p>${optionsHTML}`;
+}
+
+function nextQuestion() {
+  const selectedOption = document.querySelector('input[name="answer"]:checked');
+  if (!selectedOption) {
+    alert("Please select an answer!");
+    return;
+  }
+  
+  const answerIndex = parseInt(selectedOption.value);
+  if (answerIndex === questions[currentQuestionIndex].answer) {
+    score++;
+  }
+  
+  currentQuestionIndex++;
+  
+  if (currentQuestionIndex < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz-container").style.display = "none";
+  document.getElementById("result-screen").style.display = "block";
+  
+  document.getElementById("final-score").innerText = score;
+  
+  // リーダーボードに結果を表示（本番ではデータベースを使うと良い）
+  const leaderboard = document.getElementById("leaderboard-list");
+  const leaderboardItem = document.createElement("li");
+  leaderboardItem.innerText = `${username}: ${score}`;
+  leaderboard.appendChild(leaderboardItem);
+}
+
+function restartQuiz() {
+  score = 0;
+  currentQuestionIndex = 0;
+  document.getElementById("result-screen").style.display = "none";
+  document.getElementById("start-screen").style.display = "block";
+  document.getElementById("username").value = "";
+}
